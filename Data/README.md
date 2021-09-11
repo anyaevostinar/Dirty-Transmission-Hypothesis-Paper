@@ -5,4 +5,5 @@ To regenerate the data in a folder, first make the executable of Symbulation in 
 python3 simple_repeat.py
 ```
 
-HorizMutRateSweep - Started on 8/8/21, sweeping three settings for the horizontal transmission mutation rate at a vertical transmission rate of 30% to determine the effect of increasing mutation rate during horizontal transmission. The rates are 10%, 50% and 100% rate of mutation.
+## HorizMutRateSweep 
+Started on 8/8/21, sweeping three settings for the horizontal transmission mutation rate at a vertical transmission rate of 30% to determine the effect of increasing mutation rate during horizontal transmission. The rates are 10%, 50% and 100% rate of mutation.
