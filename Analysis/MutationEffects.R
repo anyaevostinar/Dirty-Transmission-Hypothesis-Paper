@@ -9,7 +9,7 @@ temp <- c("#673F03", "#7D3002", "#891901", "#A7000F", "#B50142", "#CD0778", "#D5
 
 
 #Line and box plot
-initial_data <- read.table("munged_basic.dat", h=T)
+initial_data <- read.table("munged_average.dat", h=T)
 symbiont <- subset(initial_data, partner=="Sym")
 symbiont <- subset(symbiont, update <10001)
 symbiont <- na.omit(symbiont)
@@ -17,7 +17,7 @@ symbiont_final <-subset(symbiont, update ==10000)
 
 
 
-ggplot(data=symbiont, aes(x=update, y=donate, group=treatment, colour=treatment)) + ylab("Symbiont Resource Behavior Value") + xlab("Updates") + stat_summary(aes(color=treatment, fill=treatment),fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) +scale_colour_manual(values=viridis(3)) + scale_fill_manual(values=viridis(3)) +ylim(-1,1)
+ggplot(data=symbiont, aes(x=update, y=donate, group=treatment, colour=treatment)) + labs(title=("Vertical Transmission Rate 30%")) + ylab("Symbiont Resource Behavior Value") + xlab("Updates") + stat_summary(aes(color=treatment, fill=treatment),fun.data="mean_cl_boot", geom=c("smooth"), se=TRUE) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill="none") +scale_colour_manual(name="Horizontal\nTransmission\nMutation Rate",values=viridis(3)) + scale_fill_manual(values=viridis(3)) +ylim(-1,1) 
 #442 x 378
 ggplot(data=symbiont_final, aes(x=treatment, y=donate, fill=treatment)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Symbiont Resource Behavior Value") + xlab("Treatment") + geom_jitter(height = 0, width = 0.1) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) +ylim(-1,1) + scale_fill_manual(values=viridis(3))
 
