@@ -4,6 +4,8 @@ import gzip
 folder = '../../Data/HorizMutRateSweep/'
 
 treatment_prefixes = ["HMR0.1VR0.3", "HMR0.5VR0.3", "HMR1.0VR0.3"]
+#treatment_prefixes = ["HMR0.1VR0.2", "HMR0.5VR0.2", "HMR1.0VR0.2"]
+#treatment_prefixes = ["HMR0.1VR0.4", "HMR0.5VR0.4", "HMR1.0VR0.4"]
 mut_sizes = ['']
 reps = range(10,40)
 p="Sym"
