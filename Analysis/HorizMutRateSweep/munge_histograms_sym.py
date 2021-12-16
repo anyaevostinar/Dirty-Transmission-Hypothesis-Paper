@@ -21,7 +21,6 @@ outFile.write(header)
 for t in treatment_prefixes:
     for r in reps:
         for m in mut_sizes:
-            #fname = folder +p+"Vals" + str(r) + "_" + t + ".data"
             fname = folder +p+"Vals"+t+"_Seed" + str(r) + ".data"
             uid = t+m + "_" + str(r)
             curFile = open(fname, 'r')
