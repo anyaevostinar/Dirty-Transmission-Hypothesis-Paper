@@ -6,7 +6,7 @@ folder = "../../Data/12.17.2021-HorizMutSweep/"
 treatment_postfixes_HMR = ["HMR0.1", "HMR0.5", "HMR1.0"]
 vert_postfixes = ["VR0.1", "VR0.2", "VR0.3", "VR0.4", "VR0.5", "VR0.6", "VR0.7", "VR0.8", "VR0.9", "VR1.0"]
 partners = ["Host", "Sym"]
-reps = range(10, 19)
+reps = range(10, 41)
 #reps = range(1001, 1021)
 header = "uid HMR VR rep update donate partner\n"
 
