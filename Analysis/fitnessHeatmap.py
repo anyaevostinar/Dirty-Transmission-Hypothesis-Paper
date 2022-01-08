@@ -32,7 +32,7 @@ for h in range(len(host_int_vals)):
 # plotting the heatmap
 
 
-hm = sns.heatmap(data = host_res, xticklabels = sym_int_vals, yticklabels = host_int_vals)
+hm = sns.heatmap(data = sym_res, xticklabels = sym_int_vals, yticklabels = host_int_vals)
   
 # displaying the plotted heatmap
 plt.show()
