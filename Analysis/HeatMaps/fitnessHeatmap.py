@@ -13,8 +13,17 @@ host_int_vals.reverse()
 
 host_res = []
 sym_res = []
+sym_repro = []
+host_repro = []
 synergy = 2
 res_update = 100
+horizontal_transmission_res = 100
+#vertical_transmission_res = 0
+#only works for free vertical transmission currently
+host_reproduction_res = 1000
+vertical_transmission_rate = 0.3
+sym_age_limit = 50
+host_age_limit = 100
 
 for h in range(len(host_int_vals)):
     host_res.append([None] * len(sym_int_vals))
@@ -55,15 +64,30 @@ for h in range(len(host_int_vals)):
             host_res[h][s] = host_resources
         else:
             print("Problem, this shouldn't happen")
-
-                
-        
-
   
-# plotting the heatmap
-
-
-hm = sns.heatmap(data = host_res, xticklabels = sym_int_vals, yticklabels = host_int_vals)
+# plotting the resources heatmap
+# hm = sns.heatmap(data = host_res, xticklabels = sym_int_vals, yticklabels = host_int_vals)
   
+for h in range(len(host_int_vals)):
+    host_repro.append([None] * len(sym_int_vals))
+    sym_repro.append([None] * len(sym_int_vals))
+    for s in range(len(sym_int_vals)):
+        h_res_update = host_res[h][s]
+        #the resetting points to zero makes the below slightly inaccurate
+        total_lifetime_res = h_res_update * host_age_limit
+        total_offspring = int(total_lifetime_res/host_reproduction_res)
+        host_repro[h][s] = total_offspring
+
+        s_res_update = sym_res[h][s]
+        #this section will need to be updated for costly vertical transmission
+        s_total_lifetime = s_res_update * sym_age_limit
+        s_total_offspring = s_total_lifetime//horizontal_transmission_res
+        s_total_offspring += int(total_offspring * vertical_transmission_rate)
+        sym_repro[h][s] = s_total_offspring
+
+hm = sns.heatmap(data = sym_repro, xticklabels = sym_int_vals, yticklabels = host_int_vals)
+
+
+
 # displaying the plotted heatmap
 plt.show()
