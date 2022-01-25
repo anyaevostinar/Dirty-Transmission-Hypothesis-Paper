@@ -21,9 +21,13 @@ horizontal_transmission_res = 100
 #vertical_transmission_res = 0
 #only works for free vertical transmission currently
 host_reproduction_res = 1000
-vertical_transmission_rate = 0.3
+vertical_transmission_rate = 0.2
 sym_age_limit = 50
 host_age_limit = 100
+
+#the chance of the symbiont offspring dying during horizontal transmission
+#because most hosts are at sym_limit
+horizontal_trans_death_rate = 0.75
 
 for h in range(len(host_int_vals)):
     host_res.append([None] * len(sym_int_vals))
@@ -82,10 +86,11 @@ for h in range(len(host_int_vals)):
         #this section will need to be updated for costly vertical transmission
         s_total_lifetime = s_res_update * sym_age_limit
         s_total_offspring = s_total_lifetime//horizontal_transmission_res
+        s_total_offspring = int(s_total_offspring *(1-horizontal_trans_death_rate))
         s_total_offspring += int(total_offspring * vertical_transmission_rate)
         sym_repro[h][s] = s_total_offspring
 
-hm = sns.heatmap(data = sym_repro, xticklabels = sym_int_vals, yticklabels = host_int_vals)
+hm = sns.heatmap(data = sym_repro, xticklabels = sym_int_vals, yticklabels = host_int_vals, annot=True)
 
 
 
