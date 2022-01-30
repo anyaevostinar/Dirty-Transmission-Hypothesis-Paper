@@ -22,9 +22,12 @@ ggplot(data=low_vr, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, ou
 
 
 #Low and medium HTMR 
-low_htmr <- subset(symbiont_final, HMR!="HMR1.0")
+low_htmr <- subset(symbiont_final, HMR<"HMR0.9")
+labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
+labelForLeg = c("10%", "50%")
 
-ggplot(data=low_htmr, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Symbiont Resource Behavior Value") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) +ylim(-1,1) + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(3))
+
+ggplot(data=low_htmr, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Mean Symbiont Interaction Value") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.87, 0.25)) + guides(fill=FALSE) +ylim(-1,1) + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(3), labels = labelForLeg) +  scale_x_discrete(labels= labelForX)
 
 hmr01VR01 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.1")
 hmr05VR01 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.1")
@@ -130,20 +133,24 @@ ggplot(short, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), positi
 #Zoom in further
 histo_90_95 <- read.table("12.23.2021-HTMR90_95/munged_histogram_sym.dat", h=T)
 histo_90_95$interval <- factor(histo_90_95$interval, levels=c("-1_-.9", "-.9_-.8", "-.8_-.7", "-.7_-.6", "-.6_-.5", "-.5_-.4", "-.4_-.3", "-.3_-.2", "-.2_-.1", "-.1_0", "0_.1", ".1_.2", ".2_.3", ".3_.4", ".4_.5", ".5_.6", ".6_.7", ".7_.8", ".8_.9", ".9_1"))
-breakout <- subset(subset(histo_90_95, treatment == "HMR0.9VR0.3"), update<=5000)
+breakout <- subset(subset(histo_90_95, treatment == "HMR0.9VR0.3"), update<=2000)
 host_sweep <- read.table("12.23.2021-HTMR90_95/munged_histogram_host.dat", h=T)
 host_sweep$interval <- factor(host_sweep$interval, levels=c("-1_-.9", "-.9_-.8", "-.8_-.7", "-.7_-.6", "-.6_-.5", "-.5_-.4", "-.4_-.3", "-.3_-.2", "-.2_-.1", "-.1_0", "0_.1", ".1_.2", ".2_.3", ".3_.4", ".4_.5", ".5_.6", ".6_.7", ".7_.8", ".8_.9", ".9_1"))
-host_breakout <- subset(subset(host_sweep, treatment == "HMR0.9VR0.3"), update<=5000)
+host_breakout <- subset(subset(host_sweep, treatment == "HMR0.9VR0.3"), update<=2000)
 
-host31 <- subset(host_breakout, rep==31)
-sym31 <- subset(breakout, rep==31)
+
+
+
+sym_temp <- aggregate(list(count = breakout$count), list(update=breakout$update, rep=breakout$rep, interval=breakout$interval, partner=breakout$partner), sum)
+host_temp <- aggregate(list(count = host_breakout$count), list(update=host_breakout$update, rep=host_breakout$rep, interval=host_breakout$interval, partner=host_breakout$partner), sum)
+
+host31 <- subset(host_temp, rep==31)
+sym31 <- subset(sym_temp, rep==31)
 rep31 <- rbind(host31, sym31)
 
+#ggplot(temp, aes(update, count)) + geom_area(aes(fill=interval), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Rate\n Phenotypes",values=turbo(20)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~rep)
+ggplot(rep31, aes(update, count)) + geom_area(aes(fill=interval), position='stack') +ylab("Count of Organisms with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Rate\n Phenotypes",values=turbo(20)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~partner,ncol=1) + geom_vline(xintercept = 1700)
 
-temp <- aggregate(list(count = breakout$count), list(update=breakout$update, rep=breakout$rep, interval=breakout$interval), sum)
-#temp <- aggregate(list(count = host_breakout$count), list(update=host_breakout$update, rep=host_breakout$rep, interval=host_breakout$interval), sum)
-
-ggplot(temp, aes(update, count)) + geom_area(aes(fill=interval), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Rate\n Phenotypes",values=turbo(20)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~rep)
 #ggplot(temp, aes(update, count)) + geom_area(aes(fill=interval), position='stack') +ylab("Count of Hosts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Rate\n Phenotypes",values=turbo(20)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~rep)
 
 
