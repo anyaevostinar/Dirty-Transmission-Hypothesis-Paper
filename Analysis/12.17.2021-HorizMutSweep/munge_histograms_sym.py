@@ -3,7 +3,8 @@ import gzip
 
 folder = '../../Data/12.17.2021-HorizMutSweep/'
 
-treatment_prefixes = ["HMR0.1VR0.3", "HMR0.5VR0.3", "HMR1.0VR0.3"]
+#treatment_prefixes = ["HMR0.1VR0.3", "HMR0.5VR0.3", "HMR1.0VR0.3"]
+treatment_prefixes = ["HMR0.1VR0.4", "HMR0.5VR0.4", "HMR1.0VR0.4"]
 mut_sizes = ['']
 reps = range(10,40)
 p="Sym"
@@ -11,7 +12,7 @@ p="Sym"
 #reps = range(1001, 1021)
 header = "uid treatment rep update interval count partner\n"
 
-outputFileName = "munged_histogram_sym.dat"
+outputFileName = "munged_histogram_sym_vt40.dat"
 
 outFile = open(outputFileName, 'w')
 outFile.write(header)
