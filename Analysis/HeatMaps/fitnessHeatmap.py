@@ -21,7 +21,7 @@ horizontal_transmission_res = 100
 #vertical_transmission_res = 0
 #only works for free vertical transmission currently
 host_reproduction_res = 1000
-vertical_transmission_rate = 0.2
+vertical_transmission_rate = 0.4
 sym_age_limit = 50
 host_age_limit = 100
 
