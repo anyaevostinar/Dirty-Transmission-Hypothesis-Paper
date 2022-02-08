@@ -6,15 +6,10 @@ library(viridis)
 #Set your working directory to the Analysis folder from the git repo https://github.com/anyaevostinar/Dirty-Transmission-Hypothesis-Paper/tree/main/Analysis
 
 #Line and box plot Interaction Value
-initial_data <- read.table("12.17.2021-HorizMutSweep/munged_average.dat", h=T)
-#data_90_95 <- read.table("12.23.2021-HTMR90_95/munged_average.dat", h=T)
-#combined <- rbind(initial_data, data_90_95)
-#symbiont <- subset(combined, partner=="Sym")
+initial_data <- read.table("02.01.2022-HorizMutSweep/munged_average.dat", h=T)
 symbiont <- subset(initial_data, partner=="Sym")
 symbiont <- na.omit(symbiont)
 symbiont_final <-subset(symbiont, update ==10000)
-
-
 
 
 #Low and medium HTMR 
@@ -23,6 +18,7 @@ labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "1
 labelForLeg = c("10%", "50%")
 
 
+#3inx5in
 ggplot(data=low_htmr, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Mean Symbiont Interaction Value") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.87, 0.25)) + guides(fill=FALSE) +ylim(-1,1) + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(4), labels = labelForLeg) +  scale_x_discrete(labels= labelForX)
 
 hmr01VR01 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.1")
@@ -58,7 +54,7 @@ hmr05VR07 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.7")
 wilcox.test(hmr01VR07$donate, hmr05VR07$donate)
 
 #Efficiency Plots
-initial_data <- read.table("12.17.2021-HorizMutSweep/munged_efficiency.dat", h=T)
+initial_data <- read.table("02.01.2022-HorizMutSweep/munged_efficiency.dat", h=T)
 initial_data <- na.omit(initial_data)
 
 labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
@@ -70,7 +66,7 @@ ggplot(data=initial_data, aes(x=VR, y=efficiency*100, color=HMR)) + geom_boxplot
 low_vr <- subset(symbiont_final, VR<"VR0.7")
 labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%")
 labelForLeg = c("10%", "50%", "100%")
-ggplot(data=low_vr, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Mean Symbiont Interaction Value") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.2, 0.7)) + guides(fill=FALSE) +ylim(-1,1) + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(4), labels = labelForLeg) +  scale_x_discrete(labels= labelForX)
+ggplot(data=low_vr, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Mean Symbiont Interaction Value") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.8, 0.25)) + guides(fill=FALSE) +ylim(-1,1) + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(4), labels = labelForLeg) +  scale_x_discrete(labels= labelForX)
 
 hmr05VR03 <- subset(subset(symbiont_final, HMR=="HMR0.5"), VR=="VR0.3")
 hmr1VR03 <- subset(subset(symbiont_final, HMR=="HMR1.0"), VR=="VR0.3")
@@ -139,11 +135,18 @@ break_out_gen <- function(file_name, treatment_wrap) {
 }
 
 #Stacked Histograms 40% VT Investigation
-temp <- stacked_histogram_gen("12.17.2021-HorizMutSweep/munged_histogram_sym_vt40.dat")
+temp <- stacked_histogram_gen("02.01.2022-HorizMutSweep/munged_histogram_sym_vt40.dat")
+hmr01 <- cbind(subset(temp, treatment=="HMR0.1VR0.4"), Treatment="HTMR 10%")
+hmr05 <- cbind(subset(temp, treatment=="HMR0.5VR0.4"), Treatment="HTMR 50%")
+hmr1 <- cbind(subset(temp, treatment=="HMR1.0VR0.4"), Treatment="HTMR 100%")
+temp <- rbind(hmr01, hmr05, hmr1)
+temp$Treatment <- factor(temp$Treatment, levels=c("HTMR 10%", "HTMR 50%", "HTMR 100%"))
 
-ggplot(temp, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Value\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~treatment) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~treatment)
+#3in x 8in
+ggplot(temp, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Value\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~treatment) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~Treatment)
 
-sym_breakout <- break_out_gen("12.17.2021-HorizMutSweep/munged_histogram_sym_vt40.dat", "HMR1.0VR0.4")
+#4.5in x 8in
+sym_breakout <- break_out_gen("02.01.2022-HorizMutSweep/munged_histogram_sym_vt40.dat", "HMR1.0VR0.4")
 ggplot(sym_breakout, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Value\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~rep)
 
 host_data <- stacked_histogram_gen("12.17.2021-HorizMutSweep/munged_histogram_host_vt40.dat")
