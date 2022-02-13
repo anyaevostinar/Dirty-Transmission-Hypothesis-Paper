@@ -5,6 +5,9 @@ library(viridis)
 
 #Set your working directory to the Analysis folder from the git repo https://github.com/anyaevostinar/Dirty-Transmission-Hypothesis-Paper/tree/main/Analysis
 
+#Bonferroni correction for multiple comparisons for all wilcox rank sum tests
+bonferroni <- 9
+
 #Line and box plot Interaction Value
 initial_data <- read.table("02.01.2022-HorizMutSweep/munged_average.dat", h=T)
 symbiont <- subset(initial_data, partner=="Sym")
@@ -23,35 +26,35 @@ ggplot(data=low_htmr, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, 
 
 hmr01VR01 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.1")
 hmr05VR01 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.1")
-wilcox.test(hmr01VR01$donate, hmr05VR01$donate)
+wilcox.test(hmr01VR01$donate, hmr05VR01$donate)$p.value * bonferroni
 
 hmr01VR02 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.2")
 hmr05VR02 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.2")
-wilcox.test(hmr01VR02$donate, hmr05VR02$donate)
+wilcox.test(hmr01VR02$donate, hmr05VR02$donate)$p.value * bonferroni
 
 hmr01VR03 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.3")
 hmr05VR03 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.3")
-wilcox.test(hmr01VR03$donate, hmr05VR03$donate)
+wilcox.test(hmr01VR03$donate, hmr05VR03$donate)$p.value * bonferroni
 
 hmr01VR04 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.4")
 hmr05VR04 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.4")
-wilcox.test(hmr01VR04$donate, hmr05VR04$donate)
+wilcox.test(hmr01VR04$donate, hmr05VR04$donate)$p.value * bonferroni
 
 hmr01VR05 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.5")
 hmr05VR05 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.5")
 median(hmr01VR05$donate)
 median(hmr05VR05$donate)
-wilcox.test(hmr01VR05$donate, hmr05VR05$donate)
+wilcox.test(hmr01VR05$donate, hmr05VR05$donate)$p.value * bonferroni
 
 hmr01VR06 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.6")
 hmr05VR06 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.6")
 median(hmr01VR06$donate)
 median(hmr05VR06$donate)
-wilcox.test(hmr01VR06$donate, hmr05VR06$donate)
+wilcox.test(hmr01VR06$donate, hmr05VR06$donate)$p.value * bonferroni
 
 hmr01VR07 <- subset(subset(low_htmr, HMR=="HMR0.1"), VR=="VR0.7")
 hmr05VR07 <- subset(subset(low_htmr, HMR=="HMR0.5"), VR=="VR0.7")
-wilcox.test(hmr01VR07$donate, hmr05VR07$donate)
+wilcox.test(hmr01VR07$donate, hmr05VR07$donate)$p.value * bonferroni
 
 #Efficiency Plots
 initial_data <- read.table("02.01.2022-HorizMutSweep/munged_efficiency.dat", h=T)
@@ -72,13 +75,13 @@ hmr05VR03 <- subset(subset(symbiont_final, HMR=="HMR0.5"), VR=="VR0.3")
 hmr1VR03 <- subset(subset(symbiont_final, HMR=="HMR1.0"), VR=="VR0.3")
 median(hmr05VR03$donate)
 median(hmr1VR03$donate)
-wilcox.test(hmr05VR03$donate, hmr1VR03$donate)
+wilcox.test(hmr05VR03$donate, hmr1VR03$donate)$p.value * bonferroni
 
 hmr05VR04 <- subset(subset(symbiont_final, HMR=="HMR0.5"), VR=="VR0.4")
 hmr1VR04 <- subset(subset(symbiont_final, HMR=="HMR1.0"), VR=="VR0.4")
 median(hmr05VR04$donate)
 median(hmr1VR04$donate)
-wilcox.test(hmr05VR04$donate, hmr1VR04$donate)
+wilcox.test(hmr05VR04$donate, hmr1VR04$donate)$p.value * bonferroni
 
 #Stacked Histograms
 
@@ -149,10 +152,18 @@ ggplot(temp, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), positio
 sym_breakout <- break_out_gen("02.01.2022-HorizMutSweep/munged_histogram_sym_vt40.dat", "HMR1.0VR0.4")
 ggplot(sym_breakout, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Value\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~rep)
 
-host_data <- stacked_histogram_gen("12.17.2021-HorizMutSweep/munged_histogram_host_vt40.dat")
-ggplot(host_data, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Hosts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Value\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~treatment) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~treatment)
+host_data <- stacked_histogram_gen("02.01.2022-HorizMutSweep/munged_histogram_host_vt40.dat")
+hmr01 <- cbind(subset(host_data, treatment=="HMR0.1VR0.4"), Treatment="HTMR 10%")
+hmr05 <- cbind(subset(host_data, treatment=="HMR0.5VR0.4"), Treatment="HTMR 50%")
+hmr1 <- cbind(subset(host_data, treatment=="HMR1.0VR0.4"), Treatment="HTMR 100%")
+host_data <- rbind(hmr01, hmr05, hmr1)
+host_data$Treatment <- factor(host_data$Treatment, levels=c("HTMR 10%", "HTMR 50%", "HTMR 100%"))
 
-host_breakout <- break_out_gen("12.17.2021-HorizMutSweep/munged_histogram_host_vt40.dat", "HMR1.0VR0.4")
+#3in x 8in
+ggplot(host_data, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Hosts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Value\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~treatment) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~Treatment)
+
+#4.5in x 8in
+host_breakout <- break_out_gen("02.01.2022-HorizMutSweep/munged_histogram_host_vt40.dat", "HMR1.0VR0.4")
 ggplot(host_breakout, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Hosts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Value\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~rep)
 
 ## Replicate 31 Case Study
@@ -161,15 +172,23 @@ sym31 <- subset(sym_breakout, rep==31)
 rep31 <- rbind(host31, sym31)
 rep31 <- subset(rep31, update <2500)
 
+#3in x 4.5in
 ggplot(rep31, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Organisms with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Rate\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~partner,ncol=1) + geom_vline(xintercept = 2100, colour="grey")
 
 #Stacked Histograms 30% VT Investigation
 
-temp <- stacked_histogram_gen("12.17.2021-HorizMutSweep/munged_histogram_sym.dat")
-ggplot(temp, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Rate\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~treatment) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~treatment)
+temp <- stacked_histogram_gen("02.01.2022-HorizMutSweep/munged_histogram_sym_vt30.dat")
+hmr01 <- cbind(subset(temp, treatment=="HMR0.1VR0.3"), Treatment="HTMR 10%")
+hmr05 <- cbind(subset(temp, treatment=="HMR0.5VR0.3"), Treatment="HTMR 50%")
+hmr1 <- cbind(subset(temp, treatment=="HMR1.0VR0.3"), Treatment="HTMR 100%")
+temp <- rbind(hmr01, hmr05, hmr1)
 
-#temp <- break_out_gen("12.17.2021-HorizMutSweep/munged_histogram_sym.dat", "HMR1.0VR0.3")
-temp <- break_out_gen("12.17.2021-HorizMutSweep/munged_histogram_sym.dat", "HMR0.5VR0.3")
+#3in x 8in
+temp$Treatment <- factor(temp$Treatment, levels=c("HTMR 10%", "HTMR 50%", "HTMR 100%"))
+ggplot(temp, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Rate\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~treatment) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~Treatment)
+
+temp <- break_out_gen("02.01.2022-HorizMutSweep/munged_histogram_sym_vt30.dat", "HMR0.5VR0.3")
+#4.5in x 8in
 ggplot(temp, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Rate\n Phenotypes",values=magma(9, direction=-1)) +facet_wrap(~rep) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~rep)
 
 
