@@ -15,6 +15,13 @@ symbiont <- na.omit(symbiont)
 symbiont_final <-subset(symbiont, update ==10000)
 
 
+#All HTMR, all VT
+labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
+labelForLeg = c("10%", "50%", "100%")
+
+#3 in x 6 in
+ggplot(data=symbiont_final, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Mean Symbiont Interaction Value") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.87, 0.3)) + guides(fill=FALSE) +ylim(-1,1) + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(4), labels = labelForLeg) +  scale_x_discrete(labels= labelForX)
+
 #Low and medium HTMR 
 low_htmr <- subset(symbiont_final, HMR<"HMR0.9")
 labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
@@ -60,6 +67,7 @@ wilcox.test(hmr01VR07$donate, hmr05VR07$donate)$p.value * bonferroni
 initial_data <- read.table("02.01.2022-HorizMutSweep/munged_efficiency.dat", h=T)
 initial_data <- na.omit(initial_data)
 
+#3.2 in x 6in
 labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
 labelForLeg = c("10%", "50%", "100%")
 ggplot(data=initial_data, aes(x=VR, y=efficiency*100, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Mean Symbiont Efficiency Value (%)") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.15, 0.3)) + guides(fill=FALSE)  + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(4), labels = labelForLeg) +  scale_x_discrete(labels= labelForX) +ylim(90, 100)
@@ -83,6 +91,29 @@ median(hmr05VR04$donate)
 median(hmr1VR04$donate)
 wilcox.test(hmr05VR04$donate, hmr1VR04$donate)$p.value * bonferroni
 
+# Holding efficiency mutation rate at 10%
+efficiency_data <- read.table("02.08.2022-NoEfficiencyMut/munged_efficiency.dat", h=T)
+initial_data <- na.omit(efficiency_data)
+
+#3.2 in x 6in
+labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
+labelForLeg = c("10%", "50%", "100%")
+ggplot(data=initial_data, aes(x=VR, y=efficiency*100, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Mean Symbiont Efficiency Value (%)") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.15, 0.3)) + guides(fill=FALSE)  + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(4), labels = labelForLeg) +  scale_x_discrete(labels= labelForX) +ylim(90, 100)
+
+
+held_efficiency <- read.table("02.08.2022-NoEfficiencyMut/munged_average.dat", h=T)
+symbiont <- subset(held_efficiency, partner=="Sym")
+symbiont <- na.omit(symbiont)
+symbiont_final <-subset(symbiont, update ==10000)
+
+labelForX <- c("10%", "20%", "30%", "40%", "50%", "60%", "70%", "80%", "90%", "100%")
+labelForLeg = c("10%", "50%", "100%")
+
+#3inx6in
+ggplot(data=symbiont_final, aes(x=VR, y=donate, color=HMR)) + geom_boxplot(alpha=0.5, outlier.size=0) + ylab("Final Mean Symbiont Interaction Value") + xlab("Vertical Transmission Rate") + theme(panel.background = element_rect(fill='white', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(), legend.position = c(0.87, 0.3)) + guides(fill=FALSE) +ylim(-1,1) + scale_color_manual(name="Horizontal\nTransmission\nMutation Rate", values=viridis(4), labels = labelForLeg) +  scale_x_discrete(labels= labelForX)
+
+
+## Cut Section
 #Stacked Histograms
 
 correct_labels <- function(first_try) {
@@ -109,7 +140,7 @@ correct_labels <- function(first_try) {
   
   combined <- rbind(neg1_9, neg9_8, neg8_7, neg7_6, neg6_5, neg5_4, neg4_3, neg3_2, neg2_1, neg1_0, pos0_1, pos1_2, pos2_3, pos3_4, pos4_5, pos5_6, pos6_7, pos7_8, pos8_9, pos9_1)
   
-  combined$Interaction_Rate <- factor(combined$Interaction_Rate, levels=c("-1 to -0.8 (Antagonistic)", "-0.8 to -0.6 (Antagonistic)", "-0.6 to -0.4 (Detrimental)", "-0.2 to 0 (Nearly Neutral)", "0 to 0.2 (Nearly Neutral)", "0.2 to 0.4 (Positive)", "0.4 to 0.6 (Positive)", "0.6 to 0.8 (Mutualistic)", "0.8 to 1.0 (Mutualistic)"))
+  combined$Interaction_Rate <- factor(combined$Interaction_Rate, levels=c("-1 to -0.8 (Antagonistic)", "-0.8 to -0.6 (Antagonistic)", "-0.6 to -0.4 (Detrimental)","-0.4 to -0.2 (Detrimental)", "-0.2 to 0 (Nearly Neutral)", "0 to 0.2 (Nearly Neutral)", "0.2 to 0.4 (Positive)", "0.4 to 0.6 (Positive)", "0.6 to 0.8 (Mutualistic)", "0.8 to 1.0 (Mutualistic)"))
   return(combined)
   
 }
@@ -136,6 +167,17 @@ break_out_gen <- function(file_name, treatment_wrap) {
   return(temp)
   
 }
+
+#Stacked histograms efficiency mut held at 10%
+temp <- stacked_histogram_gen("02.08.2022-NoEfficiencyMut/munged_histogram_sym_vt30.dat")
+hmr01 <- cbind(subset(temp, treatment=="HMR0.1VR0.3"), Treatment="HTMR 10%")
+hmr05 <- cbind(subset(temp, treatment=="HMR0.5VR0.3"), Treatment="HTMR 50%")
+hmr1 <- cbind(subset(temp, treatment=="HMR1.0VR0.3"), Treatment="HTMR 100%")
+temp <- rbind(hmr01, hmr05, hmr1)
+temp$Treatment <- factor(temp$Treatment, levels=c("HTMR 10%", "HTMR 50%", "HTMR 100%"))
+
+#3in x 8in
+ggplot(temp, aes(update, count)) + geom_area(aes(fill=Interaction_Rate), position='stack') +ylab("Count of Symbionts with Phenotype") + xlab("Evolutionary time (in updates)") +scale_fill_manual("Interaction Value\n Phenotypes",values=magma(10, direction=-1)) +facet_wrap(~treatment) + theme(panel.background = element_rect(fill='light grey', colour='black')) + theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) + guides(fill=FALSE) + guides(fill = guide_legend()) + facet_wrap(~Treatment)
 
 #Stacked Histograms 40% VT Investigation
 temp <- stacked_histogram_gen("02.01.2022-HorizMutSweep/munged_histogram_sym_vt40.dat")
